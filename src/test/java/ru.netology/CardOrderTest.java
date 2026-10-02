@@ -17,7 +17,7 @@ public class CardOrderTest {
     private WebDriver driver;
     private CardOrderPage cardOrderPage;
 
-    private static final String APP_URL = System.getProperty("app.url", "http://localhost:7777");
+    private static final String APP_URL = System.getProperty("app.url", "http://localhost:9999");
 
     @BeforeEach
     void setUp() {
