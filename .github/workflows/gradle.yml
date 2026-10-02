@@ -19,20 +19,23 @@ jobs:
         run: chmod +x gradlew
 
       - name: Start SUT
-        # SUT поднимается в фоне, & обязателен, иначе терминал заблокируется
-        run: java -jar ./artifacts/app-mbank.jar &
+        # Запускаем приложение в фоне, вывод пишем в sut.log
+        run: |
+          nohup java -jar ./artifacts/app-order.jar > sut.log 2>&1 &
+          echo "SUT started with PID $!"
 
       - name: Wait for SUT to be ready
-        # Ждём, пока приложение начнёт отвечать на порту, максимум ~30 секунд
+        # Ждём, пока приложение начнёт отвечать на порту, максимум ~60 секунд
         run: |
-          for i in $(seq 1 30); do
+          for i in $(seq 1 60); do
             if curl -s http://localhost:7777 > /dev/null; then
               echo "SUT is up after ${i}s"
               exit 0
             fi
             sleep 1
           done
-          echo "SUT did not start in 30s"
+          echo "=== SUT did not start, here is its log ==="
+          cat sut.log
           exit 1
 
       - name: Run tests
@@ -40,7 +43,7 @@ jobs:
         run: ./gradlew test -Dheadless=true
 
       - name: Upload test report
-        # Пригодится, если тест упадёт: отчёт будет доступен в артефактах запуска
+        # Отчёт будет доступен в артефактах запуска, даже если тест упал
         if: always()
         uses: actions/upload-artifact@v4
         with:
