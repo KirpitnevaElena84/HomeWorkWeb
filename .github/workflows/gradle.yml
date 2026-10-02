@@ -28,7 +28,7 @@ jobs:
         # Ждём, пока приложение начнёт отвечать на порту, максимум ~60 секунд
         run: |
           for i in $(seq 1 60); do
-            if curl -s http://localhost:7777 > /dev/null; then
+            if curl -s http://localhost:9999 > /dev/null; then
               echo "SUT is up after ${i}s"
               exit 0
             fi
